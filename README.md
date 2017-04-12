@@ -1,5 +1,8 @@
 # Dotfiles
 
+--- Note: This is fork is heavily modified for use with Python, for instance, it uses Flake8 for Python syntax checking (not pyflakes as flake8 covers both pyflakes and pep8). And changes a lot of VIM settings to make VIM more Python friendly. ---
+
+
 My OSX / Ubuntu dotfiles.
 
 ## About this project
