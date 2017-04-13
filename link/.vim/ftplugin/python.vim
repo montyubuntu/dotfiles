@@ -40,7 +40,7 @@ let python_highlight_all=1
 
 autocmd BufWritePost *.py call Flake8()
 
-" disable rope totally or set debug if rope is hangs vim on write
+" disable rope totally or set debug if rope hangs vim on write
 " let g:pymode_rope = 0
 " let g:pymode_debug=1
 
