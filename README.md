@@ -150,9 +150,9 @@ Git repos display as **[branch:flags]** where flags are:
 **+** staged files
 
 ## Inspiration
-<https://github.com/cowboy/dotfiles>
-<https://github.com/gf3/dotfiles>
-<https://github.com/mathiasbynens/dotfiles>
+<https://github.com/cowboy/dotfiles>  
+<https://github.com/gf3/dotfiles>  
+<https://github.com/mathiasbynens/dotfiles>  
 <https://github.com/objectified/vim-config>
 
 ## License
