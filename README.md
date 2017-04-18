@@ -121,13 +121,13 @@ There's a lot of stuff that requires admin access via `sudo`, so be warned that 
 #### Ubuntu / LinuxMint
 
 ```sh
-bash -c "$(wget -qO- https://raw.github.com/montyubuntu/dotfiles/bin/dotfiles)" && source ~/.bashrc
+bash -c "$(wget -qO- https://raw.github.com/montyubuntu/dotfiles/montyubuntu/bin/dotfiles)" && source ~/.bashrc
 ```
 
 #### macOS
 
 ```sh
-bash -c "$(curl -fsSL https://raw.github.com/montyubuntu/dotfiles/bin/dotfiles)" && source ~/.bashrc
+bash -c "$(curl -fsSL https://raw.github.com/montyubuntu/dotfiles/montyubuntu/bin/dotfiles)" && source ~/.bashrc
 ```
 
 ## Aliases and Functions
