@@ -1,150 +1,133 @@
-# My awesome bash prompt
-#
-# Copyright (c) 2012 "Cowboy" Ben Alman
-# Licensed under the MIT license.
-# http://benalman.com/about/license/
-#
-# Example:
-# [master:!?][cowboy@CowBook:~/.dotfiles]
-# [11:14:45] $
-#
-# Read more (and see a screenshot) in the "Prompt" section of
-# https://github.com/cowboy/dotfiles
+#!/usr/bin/env bash
 
-# ANSI CODES - SEPARATE MULTIPLE VALUES WITH ;
-#
-#  0  reset          4  underline
-#  1  bold           7  inverse
-#
-# FG  BG  COLOR     FG  BG  COLOR
-# 30  40  black     34  44  blue
-# 31  41  red       35  45  magenta
-# 32  42  green     36  46  cyan
-# 33  43  yellow    37  47  white
+# Shell prompt based on the Solarized Dark theme.
+# Screenshot: http://i.imgur.com/EkEtphC.png
+# Heavily inspired by @necolas’s prompt: https://github.com/necolas/dotfiles
+# iTerm → Profiles → Text → use 13pt Monaco with 1.1 vertical spacing.
 
-if [[ ! "${__prompt_colors[@]}" ]]; then
-  __prompt_colors=(
-    "36" # information color
-    "37" # bracket color
-    "31" # error color
-  )
+#if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+#	export TERM='gnome-256color';
+#elif infocmp xterm-256color >/dev/null 2>&1; then
+#	export TERM='xterm-256color';
+#fi;
 
-  if [[ "$SSH_TTY" ]]; then
-    # connected via ssh
-    __prompt_colors[0]="32"
-  elif [[ "$USER" == "root" ]]; then
-    # logged in as root
-    __prompt_colors[0]="35"
+prompt_git() {
+	local s='';
+	local branchName='';
+
+	# Check if the current directory is in a Git repository.
+	if [ $(git rev-parse --is-inside-work-tree &>/dev/null; echo "${?}") == '0' ]; then
+
+		# check if the current directory is in .git before running git checks
+		if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == 'false' ]; then
+
+			# Ensure the index is up to date.
+			git update-index --really-refresh -q &>/dev/null;
+
+			# Check for uncommitted changes in the index.
+			if ! $(git diff --quiet --ignore-submodules --cached); then
+				s+='+';
+			fi;
+
+			# Check for unstaged changes.
+			if ! $(git diff-files --quiet --ignore-submodules --); then
+				s+='!';
+			fi;
+
+			# Check for untracked files.
+			if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+				s+='?';
+			fi;
+
+			# Check for stashed files.
+			if $(git rev-parse --verify refs/stash &>/dev/null); then
+				s+='$';
+			fi;
+
+		fi;
+
+		# Get the short symbolic ref.
+		# If HEAD isn’t a symbolic ref, get the short SHA for the latest commit
+		# Otherwise, just give up.
+		branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
+			git rev-parse --short HEAD 2> /dev/null || \
+			echo '(unknown)')";
+
+		[ -n "${s}" ] && s=" [${s}]";
+
+		echo -e "${1}${branchName}${2}${s}";
+	else
+		return;
+	fi;
+}
+
+complete -W "$(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | \
+sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh sftp scp;
+
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
   fi
 fi
 
-# Inside a prompt function, run this alias to setup local $c0-$c9 color vars.
-alias __prompt_get_colors='__prompt_colors[9]=; local i; for i in ${!__prompt_colors[@]}; do local c$i="\[\e[0;${__prompt_colors[$i]}m\]"; done'
+if tput setaf 1 &> /dev/null; then
+	tput sgr0; # reset colors
+	bold=$(tput bold);
+	reset=$(tput sgr0);
+	# Solarized colors, taken from http://git.io/solarized-colors.
+	black=$(tput setaf 0);
+	blue=$(tput setaf 33);
+	cyan=$(tput setaf 37);
+	green=$(tput setaf 64);
+	orange=$(tput setaf 166);
+	purple=$(tput setaf 125);
+	red=$(tput setaf 124);
+	violet=$(tput setaf 61);
+	white=$(tput setaf 15);
+	yellow=$(tput setaf 136);
+else
+	bold='';
+	reset="\e[0m";
+	black="\e[1;30m";
+	blue="\e[1;34m";
+	cyan="\e[1;36m";
+	green="\e[1;32m";
+	orange="\e[1;33m";
+	purple="\e[1;35m";
+	red="\e[1;31m";
+	violet="\e[1;35m";
+	white="\e[1;37m";
+	yellow="\e[1;33m";
+fi;
 
-# Exit code of previous command.
-function __prompt_exit_code() {
-  __prompt_get_colors
-  [[ $1 != 0 ]] && echo " $c2$1$c9"
-}
+# Highlight the user name when logged in as root.
+if [[ "${USER}" == "root" ]]; then
+	userStyle="${red}";
+else
+	userStyle="${orange}";
+fi;
 
-# Git status.
-function __prompt_git() {
-  __prompt_get_colors
-  local status branch flags
-  status="$(git status 2>/dev/null)"
-  [[ $? != 0 ]] && return 1;
-  branch="$(echo "$status" | awk '/# Initial commit/ {print "(init)"}')"
-  [[ "$branch" ]] || branch="$(echo "$status" | awk '/# On branch/ {print $4}')"
-  [[ "$branch" ]] || branch="$(git branch | perl -ne '/^\* \(detached from (.*)\)$/ ? print "($1)" : /^\* (.*)/ && print $1')"
-  flags="$(
-    echo "$status" | awk 'BEGIN {r=""} \
-        /^(# )?Changes to be committed:$/        {r=r "+"}\
-        /^(# )?Changes not staged for commit:$/  {r=r "!"}\
-        /^(# )?Untracked files:$/                {r=r "?"}\
-      END {print r}'
-  )"
-  __prompt_vcs_info=("$branch" "$flags")
-}
+# Highlight the hostname when connected via SSH.
+if [[ "${SSH_TTY}" ]]; then
+	hostStyle="${bold}${red}";
+else
+	hostStyle="${yellow}";
+fi;
 
-# hg status.
-function __prompt_hg() {
-  __prompt_get_colors
-  local summary branch bookmark flags
-  summary="$(hg summary 2>/dev/null)"
-  [[ $? != 0 ]] && return 1;
-  branch="$(echo "$summary" | awk '/branch:/ {print $2}')"
-  bookmark="$(echo "$summary" | awk '/bookmarks:/ {print $2}')"
-  flags="$(
-    echo "$summary" | awk 'BEGIN {r="";a=""} \
-      /(modified)/     {r= "+"}\
-      /(unknown)/      {a= "?"}\
-      END {print r a}'
-  )"
-  __prompt_vcs_info=("$branch" "$bookmark" "$flags")
-}
+PS1="\[\033]0;\W\007\]"; # working directory base name
+PS1+="\[${bold}\]\n"; # newline
+PS1+="\[${userStyle}\]\u"; # username
+PS1+="\[${white}\] at ";
+PS1+="\[${hostStyle}\]\h"; # host
+PS1+="\[${white}\] in ";
+PS1+="\[${green}\]\w"; # working directory full path
+PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"; # Git repository details
+PS1+="\n";
+PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
+export PS1;
 
-# SVN info.
-function __prompt_svn() {
-  __prompt_get_colors
-  local info last current
-  info="$(svn info . 2> /dev/null)"
-  [[ ! "$info" ]] && return 1
-  last="$(echo "$info" | awk '/Last Changed Rev:/ {print $4}')"
-  current="$(echo "$info" | awk '/Revision:/ {print $2}')"
-  __prompt_vcs_info=("$last" "$current")
-}
+PS2="\[${yellow}\]→ \[${reset}\]";
+export PS2;
 
-# Maintain a per-execution call stack.
-__prompt_stack=()
-trap '__prompt_stack=("${__prompt_stack[@]}" "$BASH_COMMAND")' DEBUG
-
-function __prompt_command() {
-  local i exit_code=$?
-  # If the first command in the stack is __prompt_command, no command was run.
-  # Set exit_code to 0 and reset the stack.
-  [[ "${__prompt_stack[0]}" == "__prompt_command" ]] && exit_code=0
-  __prompt_stack=()
-
-  # Manually load z here, after $? is checked, to keep $? from being clobbered.
-  [[ "$(type -t _z)" ]] && _z --add "$(pwd -P 2>/dev/null)" 2>/dev/null
-
-  # While the simple_prompt environment var is set, disable the awesome prompt.
-  [[ "$simple_prompt" ]] && PS1='\n$ ' && return
-
-  __prompt_get_colors
-  # http://twitter.com/cowboy/status/150254030654939137
-  PS1="\n"
-  __prompt_vcs_info=()
-  # git: [branch:flags]
-  __prompt_git || \
-  # hg:  [branch:bookmark:flags]
-  __prompt_hg || \
-  # svn: [repo:lastchanged]
-  __prompt_svn
-  # Iterate over all vcs info parts, outputting an escaped var name that will
-  # be interpolated automatically. This ensures that malicious branch names
-  # can't execute arbitrary commands. For more info, see this PR:
-  # https://github.com/cowboy/dotfiles/pull/68
-  if [[ "${#__prompt_vcs_info[@]}" != 0 ]]; then
-    PS1="$PS1$c1[$c0"
-    for i in "${!__prompt_vcs_info[@]}"; do
-      if [[ "${__prompt_vcs_info[i]}" ]]; then
-        [[ $i != 0 ]] && PS1="$PS1$c1:$c0"
-        PS1="$PS1\${__prompt_vcs_info[$i]}"
-      fi
-    done
-    PS1="$PS1$c1]$c9"
-  fi
-  # misc: [cmd#:hist#]
-  # PS1="$PS1$c1[$c0#\#$c1:$c0!\!$c1]$c9"
-  # path: [user@host:path]
-  PS1="$PS1$c1[$c0\u$c1@$c0\h$c1:$c0\w$c1]$c9"
-  PS1="$PS1\n"
-  # date: [HH:MM:SS]
-  PS1="$PS1$c1[$c0$(date +"%H$c1:$c0%M$c1:$c0%S")$c1]$c9"
-  # exit code: 127
-  PS1="$PS1$(__prompt_exit_code "$exit_code")"
-  PS1="$PS1 \$ "
-}
-
-PROMPT_COMMAND="__prompt_command"
