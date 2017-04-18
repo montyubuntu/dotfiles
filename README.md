@@ -145,9 +145,9 @@ I think [my bash prompt](source/50_prompt.sh) is awesome. It shows git repo stat
 
 Git repos display as **[branch:flags]** where flags are:
 
-**?** untracked files
-**!** changed (but unstaged) files
-**+** staged files
+**?** untracked files  
+**!** changed (but unstaged) files  
+**+** staged files  
 
 ## Inspiration
 <https://github.com/cowboy/dotfiles>  
