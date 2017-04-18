@@ -10,7 +10,7 @@
   remote_user: root
   vars:
     user: "{{ lookup('env', 'USER') }}"
-    password: "$6$Som3S@lt$bJOg1GmsbFaHHH1pGTaduyC4QYyGekpniRZKMRxFtzhg.RSH5.s3awqVxZWcV/sWFZ8Ss2K0QclwNQlJXsZH31"
+    password: "77f44b9024fd19a6674a62d98939f4e7f1b77f64eac4c7559414c46bdaec494c"
   tasks:
     - name: update/upgrade apt
       apt: upgrade=dist update_cache=yes
