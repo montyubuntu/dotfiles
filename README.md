@@ -96,7 +96,7 @@ _Tested in Ubuntu 14.04 LTS_
 1. Fork this repo
 1. Open a terminal/shell and do this (change `montyubuntu` and `montyubuntu` as appropriate):
 
-#### Ubuntu
+#### Ubuntu / LinuxMint
 
 ```sh
 export DOTFILES_GH_USER=montyubuntu
