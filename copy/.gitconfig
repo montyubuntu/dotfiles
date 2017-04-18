@@ -1,5 +1,5 @@
 [user]
-  name = Ben Alman
+  name = "$USER"
   email = EMAIL
 [core]
   autocrlf = input
@@ -38,7 +38,7 @@
   changed = green
   untracked = cyan
 [push]
-  default = simple
+  default = current
 [merge]
   log = true
 [difftool "Kaleidoscope"]
