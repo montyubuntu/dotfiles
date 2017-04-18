@@ -68,7 +68,7 @@ Scripts in the `/init` subdirectory will be executed. A whole bunch of things wi
 
 Because the [dotfiles][dotfiles] script is completely self-contained, you should be able to delete everything else from your dotfiles repo fork, and it will still work. The only thing it really cares about are the `/copy`, `/link` and `/init` subdirectories, which will be ignored if they are empty or don't exist.
 
-If you modify things and notice a bug or an improvement, [file an issue](https://github.com/cowboy/dotfiles/issues) or [a pull request](https://github.com/cowboy/dotfiles/pulls) and let me know.
+If you modify things and notice a bug or an improvement, [file an issue](https://github.com/montyubuntu/dotfiles/issues) or [a pull request](https://github.com/montyubuntu/dotfiles/pulls) and let me know.
 
 Also, before installing, be sure to [read my gently-worded note](#heed-this-critically-important-warning-before-you-install).
 
@@ -90,31 +90,25 @@ Either way, you should at least update/upgrade APT with `sudo apt-get -qq update
 
 _Tested in Ubuntu 14.04 LTS_
 
-### Heed this critically important warning before you install
-
-**If you're not me, please _do not_ install dotfiles directly from this repo!**
-
-Why? Because I often completely break this repo while updating. Which means that if I do that and you run the `dotfiles` command, your home directory will burst into flames, and you'll have to go buy a new computer. No, not really, but it will be very messy.
-
 ### Actual installation (for you)
 
 1. [Read my gently-worded note](#heed-this-critically-important-warning-before-you-install)
 1. Fork this repo
-1. Open a terminal/shell and do this (change `cowboy` and `master` as appropriate):
+1. Open a terminal/shell and do this (change `montyubuntu` and `montyubuntu` as appropriate):
 
 #### Ubuntu
 
 ```sh
-export DOTFILES_GH_USER=cowboy
-export DOTFILES_GH_BRANCH=master
+export DOTFILES_GH_USER=montyubuntu
+export DOTFILES_GH_BRANCH=montyubuntu
 bash -c "$(wget -qO- https://raw.github.com/$DOTFILES_GH_USER/dotfiles/$DOTFILES_GH_BRANCH/bin/dotfiles)" && source ~/.bashrc
 ```
 
 #### macOS
 
 ```sh
-export DOTFILES_GH_USER=cowboy
-export DOTFILES_GH_BRANCH=master
+export DOTFILES_GH_USER=montyubuntu
+export DOTFILES_GH_BRANCH=montyubuntu
 bash -c "$(curl -fsSL https://raw.github.com/$DOTFILES_GH_USER/dotfiles/$DOTFILES_GH_BRANCH/bin/dotfiles)" && source ~/.bashrc
 ```
 
@@ -124,16 +118,16 @@ There's a lot of stuff that requires admin access via `sudo`, so be warned that 
 
 ### Actual installation (for me)
 
-#### Ubuntu
+#### Ubuntu / LinuxMint
 
 ```sh
-bash -c "$(wget -qO- https://bit.ly/cowboy-dotfiles)" && source ~/.bashrc
+bash -c "$(wget -qO- https://raw.github.com/montyubuntu/dotfiles/bin/dotfiles)" && source ~/.bashrc
 ```
 
 #### macOS
 
 ```sh
-bash -c "$(curl -fsSL https://bit.ly/cowboy-dotfiles)" && source ~/.bashrc
+bash -c "$(curl -fsSL https://raw.github.com/montyubuntu/dotfiles/bin/dotfiles)" && source ~/.bashrc
 ```
 
 ## Aliases and Functions
@@ -147,29 +141,21 @@ In addition to the aforementioned [dotfiles][dotfiles] script, there are a few o
 * Look through the [bin](bin) subdirectory for a few more.
 
 ## Prompt
-I think [my bash prompt](source/50_prompt.sh) is awesome. It shows git and svn repo status, a timestamp, error exit codes, and even changes color depending on how you've logged in.
+I think [my bash prompt](source/50_prompt.sh) is awesome. It shows git repo status, a timestamp, error exit codes, and even changes color depending on how you've logged in.
 
 Git repos display as **[branch:flags]** where flags are:
 
-**?** untracked files  
-**!** changed (but unstaged) files  
+**?** untracked files
+**!** changed (but unstaged) files
 **+** staged files
 
-SVN repos display as **[rev1:rev2]** where rev1 and rev2 are:
-
-**rev1** last changed revision  
-**rev2** revision
-
-Check it out:
-
-![My awesome bash prompt](http://farm8.staticflickr.com/7142/6754488927_563dd73553_b.jpg)
-
 ## Inspiration
-<https://github.com/gf3/dotfiles>  
-<https://github.com/mathiasbynens/dotfiles>  
-(and 15+ years of accumulated crap)
+<https://github.com/cowboy/dotfiles>
+<https://github.com/gf3/dotfiles>
+<https://github.com/mathiasbynens/dotfiles>
+<https://github.com/objectified/vim-config>
 
 ## License
-Copyright (c) 2014 "Cowboy" Ben Alman  
-Licensed under the MIT license.  
+Copyright (c) 2014 "Cowboy" Ben Alman
+Licensed under the MIT license.
 <http://benalman.com/about/license/>
