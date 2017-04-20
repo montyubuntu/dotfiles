@@ -42,6 +42,7 @@ apt_packages+=(
   postgresql
   silversearcher-ag
   sl
+  pip
   telnet
   tree
 )
@@ -254,6 +255,7 @@ apt_packages=($(setdiff "${apt_packages[*]}" "$installed_apt_packages"))
 
 if (( ${#apt_packages[@]} > 0 )); then
   e_header "Installing APT packages (${#apt_packages[@]})"
+  pip install --upgrade pip
   for package in "${apt_packages[@]}"; do
     e_arrow "$package"
     [[ "$(type -t preinstall_$package)" == function ]] && preinstall_$package

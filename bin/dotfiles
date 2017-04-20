@@ -327,7 +327,7 @@ while true; do sudo -n true; sleep 10; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Install a custom sudoers file that allows "sudo apt-get" to be executed
 # without asking for a password.
-sudoers_file=/etc/sudoers.d/montyubuntu-dotfiles
+sudoers_file=/etc/sudoers.d/$USER-dotfiles
 # Contents of the sudoers file.
 function sudoers_text() {
   cat <<EOF

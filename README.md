@@ -1,10 +1,14 @@
 # Dotfiles
 
---- Note: This is fork is heavily modified for use with Python, for instance, it uses Flake8 for Python syntax checking (not pyflakes as flake8 covers both pyflakes and pep8). And changes a lot of VIM settings to make VIM more Python friendly. ---
-In order for flake8 to work, simply install it by running: 'pip install flake8'.
+* Note: This cowboy-dotfiles fork (montyubuntu-dotfiles) is heavily modified, amongst its changes are:
+* Changes a lot of vim config settings to make vim more Python friendly.
+* Python syntax checking in vim: it now uses Flake8 for Python syntax checking (not pyflakes as flake8 covers both pyflakes and pep8).
+* Ansible and Yaml vim filetype support.
+* It has added support for Linux Mint.
+* Nice and smart bash completion.
+* Different bash prompt.
 
-
-My OSX / Ubuntu dotfiles.
+My OSX / Ubuntu / LinuxMint dotfiles.
 
 ## About this project
 
