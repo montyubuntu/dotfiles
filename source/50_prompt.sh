@@ -11,7 +11,7 @@
 #	export TERM='xterm-256color';
 #fi;
 
-prompt_git() {
+prompt_git () {
 	local s='';
 	local branchName='';
 
@@ -65,11 +65,11 @@ complete -W "$(echo `cat ~/.ssh/known_hosts | cut -f 1 -d ' ' | \
 sed -e s/,.*//g | uniq | grep -v "\["`;)" ssh sftp scp;
 
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+      . /usr/share/bash-completion/bash_completion
+    elif [ -f /etc/bash_completion ]; then
+      . /etc/bash_completion
+    fi
 fi
 
 if tput setaf 1 &> /dev/null; then
@@ -125,6 +125,7 @@ PS1+="\[${white}\] in ";
 PS1+="\[${green}\]\w"; # working directory full path
 PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"; # Git repository details
 PS1+="\n";
+PS1+="\[${blue}\]$(date +"%H$c1:$c0%M$c1:$c0%S") "
 PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
 export PS1;
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#montyubuntu!/usr/bin/env bash
 [[ "$1" == "source" ]] || \
 
 echo 'Dotfiles - "Cowboy" Ben Alman - http://benalman.com/'
@@ -52,12 +52,19 @@ function is_dotfiles_bin() {
 function is_osx() {
   [[ "$OSTYPE" =~ ^darwin ]] || return 1
 }
+
 function is_ubuntu() {
   [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
 }
+
+function is_mint() {
+  [[ "$(cat /etc/linuxmint/info 2> /dev/null)" =~ Mint ]] || return 1
+}
+
 function is_ubuntu_desktop() {
   dpkg -l ubuntu-desktop >/dev/null 2>&1 || return 1
 }
+
 function get_os() {
   for os in osx ubuntu ubuntu_desktop; do
     is_$os; [[ $? == ${1:-0} ]] && echo $os
@@ -320,7 +327,7 @@ while true; do sudo -n true; sleep 10; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Install a custom sudoers file that allows "sudo apt-get" to be executed
 # without asking for a password.
-sudoers_file=/etc/sudoers.d/cowboy-dotfiles
+sudoers_file=/etc/sudoers.d/montyubuntu-dotfiles
 # Contents of the sudoers file.
 function sudoers_text() {
   cat <<EOF
@@ -350,24 +357,26 @@ fi
 EOF
 }
 # Offer to create the sudoers file if it doesn't exist.
-if is_ubuntu && [[ ! -e $sudoers_file ]]; then
-  cat <<EOF
+if [[ is_mint == '0' || is_ubuntu == '0' ]]; then
+  if is_ubuntu && [[ ! -e $sudoers_file ]]; then
+    cat <<EOF
 
-The sudoers file can be updated to allow "sudo apt-get" to be executed
-without asking for a password. You can verify that this worked correctly by
-running "sudo -k apt-get". If it doesn't ask for a password, and the output
-looks normal, it worked.
+  The sudoers file can be updated to allow "sudo apt-get" to be executed
+  without asking for a password. You can verify that this worked correctly by
+  running "sudo -k apt-get". If it doesn't ask for a password, and the output
+  looks normal, it worked.
 
-THIS SHOULD ONLY BE ATTEMPTED IF YOU ARE LOGGED IN AS ROOT IN ANOTHER SHELL.
+  THIS SHOULD ONLY BE ATTEMPTED IF YOU ARE LOGGED IN AS ROOT IN ANOTHER SHELL.
 
-This will be skipped if "Y" isn't pressed within the next $prompt_delay seconds.
-EOF
-  read -N 1 -t $prompt_delay -p "Update sudoers file? [y/N] " update_sudoers; echo
-  if [[ "$update_sudoers" =~ [Yy] ]]; then
-    e_header "Creating sudoers file"
-    sudo bash -c "$(sudoers_code)"
-  else
-    echo "Skipping."
+  This will be skipped if "Y" isn't pressed within the next $prompt_delay seconds.
+  EOF
+    read -N 1 -t $prompt_delay -p "Update sudoers file? [y/N] " update_sudoers; echo
+    if [[ "$update_sudoers" =~ [Yy] ]]; then
+      e_header "Creating sudoers file"
+      sudo bash -c "$(sudoers_code)"
+    else
+      echo "Skipping."
+    fi
   fi
 fi
 
@@ -379,9 +388,11 @@ fi
 
 # If Git is not installed, install it (Ubuntu only, since Git comes standard
 # with recent XCode or CLT)
-if [[ ! "$(type -P git)" ]] && is_ubuntu; then
-  e_header "Installing Git"
-  sudo apt-get -qq install git-core
+if [[ is_mint == '0' || is_ubuntu == '0' ]]; then
+  if [[ ! "$(type -P git)" ]] && is_ubuntu; then
+    e_header "Installing Git"
+    sudo apt-get -qq install git-core
+  fi
 fi
 
 # If Git isn't installed by now, something exploded. We gots to quit!
@@ -394,8 +405,8 @@ fi
 if [[ ! -d $DOTFILES ]]; then
   # Dotfiles directory doesn't exist? Clone it!
   e_header "Downloading dotfiles"
-  git clone --branch ${DOTFILES_GH_BRANCH:-master} --recursive \
-    git://github.com/${DOTFILES_GH_USER:-cowboy}/dotfiles.git $DOTFILES
+  git clone --branch ${DOTFILES_GH_BRANCH:-montyubuntu} --recursive \
+  git://github.com/${DOTFILES_GH_USER:-montyubuntu}/dotfiles.git $DOTFILES
   cd $DOTFILES
 elif [[ "$1" != "restart" ]]; then
   # Make sure we have the latest files.
