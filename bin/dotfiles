@@ -369,7 +369,7 @@ if [[ is_mint == '0' || is_ubuntu == '0' ]]; then
   THIS SHOULD ONLY BE ATTEMPTED IF YOU ARE LOGGED IN AS ROOT IN ANOTHER SHELL.
 
   This will be skipped if "Y" isn't pressed within the next $prompt_delay seconds.
-  EOF
+EOF
     read -N 1 -t $prompt_delay -p "Update sudoers file? [y/N] " update_sudoers; echo
     if [[ "$update_sudoers" =~ [Yy] ]]; then
       e_header "Creating sudoers file"
