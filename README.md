@@ -1,3 +1,5 @@
+Moved to gitlab: https://gitlab.com/Manjar0/dotfiles-manjar0
+
 # Dotfiles
 
 * Note: This cowboy-dotfiles fork (montyubuntu-dotfiles) is heavily modified, amongst its changes are:
